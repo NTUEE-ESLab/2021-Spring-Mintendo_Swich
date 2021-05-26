@@ -2,10 +2,8 @@ import socket
 import json
 import numpy as np
 
-HOST = '192.168.50.254'  # Standard loopback interface address (localhost) 192.168.50.254
+HOST = '192.168.1.102'  # Standard loopback interface address (localhost) 192.168.50.254
 PORT = 3000        # Port to listen on (non-privileged ports are > 1023)
-
-# use ggplot style for more sophisticated visuals
 
 # data format example
 # {"Left": "0", "Right": "0", "Jump":"0", "Item_front":"0", "Item_back":"0", "Drift":"0", "Acc": "1"}
