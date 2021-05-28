@@ -126,7 +126,7 @@ public:
     void calcJump(uint8_t& jump) 
     {
         BSP_ACCELERO_AccGetXYZ(_pAccDataXYZ);
-        if ( ((_pAccDataXYZ[1]-_AccOffset[1])*DownScaler) > 0.6)
+        if ( ((_pAccDataXYZ[1]-_AccOffset[1])*DownScaler) > 0.5)
         {
             if (_canJump) jump = 1;
             _canJump = false;
@@ -142,14 +142,39 @@ public:
 
     void getData(uint8_t& left, uint8_t& right, uint8_t& jump, uint8_t& itemFront, uint8_t& itemBack, uint8_t& drift, uint8_t acc)
     {
-        // for debug purpose only //
-        _itemFrontOut = (_itemFrontIn.read()) ? 1 : 0;
-        _itemBackOut = (_itemBackIn.read())? 1 : 0;
-        _driftOut = (_driftIn.read())? 1 : 0;
+        itemFront = (_itemFrontIn.read() && _canItemFront) ? 1 : 0;
+        if (itemFront) _canItemFront = false;
+        if (!_canItemFront) _itemFrontCount = _itemFrontCount +1;
+        if (_itemFrontCount > 10)
+        {
+            _itemFrontCount = 0;
+            _canItemFront = true;
+        }
+        _itemFrontOut = (itemFront) ? 1 : 0;
+        
 
-        itemFront = (_itemFrontIn.read()) ? 1 : 0;
-        itemBack = (_itemBackIn.read())? 1 : 0;
-        drift = (_driftIn.read())? 1 : 0;
+        itemBack = (_itemBackIn.read() && _canItemBack)? 1 : 0;
+        if (itemBack) _canItemBack = false;
+        if (!_canItemBack) _itemBackCount = _itemBackCount+1;
+        if (_itemBackCount > 10)
+        {
+            _itemBackCount = 0;
+            _canItemBack = true;
+        }
+        _itemBackOut = (itemBack)? 1 : 0;
+
+
+        drift = (_driftIn.read() && _canDrift)? 1 : 0;
+        if (drift) _canDrift = false;
+        if (!_canDrift) _driftCount = _driftCount+1;
+        if (_driftCount > 10)
+        {
+            _driftCount = 0;
+            _canDrift = true;
+        }
+        _driftOut = (drift)? 1 : 0;
+
+        acc = 1;
 
         calcJump(jump);
         calcDirection(left, right);
@@ -165,6 +190,15 @@ private:
 
     int _jumpCount = 0;
     bool _canJump = true;
+
+    int _driftCount = 0;
+    bool _canDrift = true;
+
+    int _itemFrontCount = 0;
+    bool _canItemFront = 0;
+
+    int _itemBackCount = 0;
+    bool _canItemBack = true;
 };
 
 class WIFI
@@ -234,6 +268,11 @@ public:
         if (_jump) printf("jump\n");
         if (_left) printf("left\n");
         if (_right) printf("right\n");
+        if (_itemFront) printf("throw item front\n");
+        if (_itemBack) printf("throw item back\n");
+        if (_drift) printf("drift\n");
+
+
 
 
         response = _socket->send(sbuffer,len);
