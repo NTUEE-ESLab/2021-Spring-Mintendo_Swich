@@ -1,0 +1,25 @@
+1 VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"
+    BEGIN
+      VALUE "CompanyName", "Unizar"
+      VALUE "FileDescription", "Super Mario Kart"
+      VALUE "FileVersion", "1.0"
+      VALUE "InternalName", "Super Mario Kart"
+      VALUE "LegalCopyright", "Unizar. Group 4."
+      VALUE "OriginalFilename", "super_mario_kart.exe"
+      VALUE "ProductName", "Super Mario Kart"
+      VALUE "ProductVersion", "1.0"
+      VALUE "Comments", "This software has been developed for non-commercial, personal and academic purposes"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 1252
+  END
+END
+id ICON "../assets/icon.ico"
