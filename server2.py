@@ -3,18 +3,21 @@ import json
 import numpy as np
 import keyboard as kb
 import time
+from pynput.keyboard import Key, Controller
 
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost) 192.168.50.254
 PORT = 3000        # Port to listen on (non-privileged ports are > 1023)
 
-keyDict = {"Left": "left", "Right": "right", "Jump":"c", "Item_front":"up", "Item_back":"down", "Drift":"c", "Acc": "x"}  
+keyDict = {"Left": "left", "Right": "right", "Jump":"c", "Item_front":"up", "Item_back":"down", "Drift":"c", "Acc": "x"}
+keyDict2 = {"Left": Key.left, "Right": Key.right, "Jump":"c", "Item_front":Key.up, "Item_back":Key.down, "Drift":"c", "Acc": "x"}  
 # use ggplot style for more sophisticated visuals
 
 # data format example
-# {"Left": "0", "Right": "0", "Jump":"0", "Item_front":"0", "Item_back":"0", "Drift":"0", "Acc": "1"}
+# {"Left": 0, "Right": 0, "Jump":0, "Item_front":0, "Item_back":0, "Drift":0, "Acc": 1}
 
 def main():
-    size = 103
+    size = 76
+    keyboard = Controller()
     past_j_data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
@@ -24,7 +27,7 @@ def main():
         with conn:
             print('Connected by', addr)
             while True:
-                data = conn.recv(1024).decode('utf-8')
+                data = conn.recv(76).decode('utf-8')
                 if not data:
                     print("no data!!!")
                     break
@@ -32,13 +35,14 @@ def main():
                 # check data size!! if size is reasonable then parse json
                 if len(data) == size:
                     if past_j_data == None:
-                        past_j_data = {"Left": "0", "Right": "0", "Jump":"0", "Item_front":"0", "Item_back":"0", "Drift":"0", "Acc": "1"}
+                        past_j_data = {"Left": 0, "Right": 0, "Jump":0, "Item_front":0, "Item_back":0, "Drift":0, "Acc": 1}
+                    #print(data)
                     j_data=json.loads(data)
                     for control in j_data:
-                        if past_j_data[control] == "0" and j_data[control] == "1":
-                            kb.press(keyDict[control])
-                        elif past_j_data[control] == "1" and j_data[control] == "0":
-                            kb.release(keyDict[control])   
+                        if past_j_data[control] == 0 and j_data[control] == 1:
+                            keyboard.press(keyDict2[control])
+                        elif past_j_data[control] == 1 and j_data[control] == 0:
+                            keyboard.release(keyDict2[control])   
                     past_j_data = j_data
                     #print(j_data)
                 else:
