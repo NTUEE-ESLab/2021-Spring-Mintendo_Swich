@@ -6,27 +6,20 @@
 class Sensor {
     private:
         events::EventQueue &_event_queue;
-        int   _AccOffset[3] = {};
-        float _GyroOffset[3] = {};
         
     public:
         Sensor(events::EventQueue &event_queue);
-        void calibrate();
-        void calcDirection();
-        void calcJump();
         void getData();
         void init_params();
+        void calibrate();
 
         int16_t _pAccDataXYZ[3] = {0};
         float _pGyroDataXYZ[3] = {0};
-        int8_t left;
-        int8_t right;
-        int8_t jump;
-        int8_t itemFront;
-        int8_t itemBack;
-        int8_t drift;
-        int8_t acc;
-
+        int16_t _AccOffset[3] = {0};
+        float _GyroOffset[3] = {0};
+        int8_t leftButton;
+        int8_t rightButton;
+        int8_t topButton;
 };
 
 #endif

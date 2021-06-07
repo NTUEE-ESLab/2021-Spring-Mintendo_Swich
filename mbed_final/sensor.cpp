@@ -1,6 +1,6 @@
 #include "sensor.h"
 
-#define DownScaler 0.001 //adjust units of acceleration read from STM
+// #define DownScaler 0.001 //adjust units of acceleration read from STM
 
 DigitalIn BUTTON_RIGHT(D0);  
 DigitalIn BUTTON_LEFT(D1); 
@@ -11,8 +11,8 @@ Sensor::Sensor(events::EventQueue &event_queue) : _event_queue(event_queue){
     
     BSP_ACCELERO_Init();    
     BSP_GYRO_Init();
-    calibrate();
     init_params();
+    calibrate();
     
 }
 
@@ -44,42 +44,15 @@ void Sensor::calibrate(){
 
 void Sensor::getData()
 {
-    itemFront = BUTTON_RIGHT.read();
-    itemBack = BUTTON_LEFT.read();
-    drift = BUTTON_TOP.read();
-    acc = 1;
-    calcJump();
-    calcDirection();
+    leftButton = ((BUTTON_LEFT.read())?1:0);
+    rightButton = (BUTTON_RIGHT.read()?1:0);
+    topButton = (BUTTON_TOP.read()?1:0) ;
+    BSP_ACCELERO_AccGetXYZ(_pAccDataXYZ);
+    BSP_GYRO_GetXYZ(_pGyroDataXYZ);
 }
-
-void Sensor:: calcDirection()
-{
-        BSP_ACCELERO_AccGetXYZ(_pAccDataXYZ);
-        if ( ((_pAccDataXYZ[0]-_AccOffset[0])*DownScaler) > 0.6)
-            left = 1;
-
-        if ( ((_pAccDataXYZ[0]-_AccOffset[0])*DownScaler) < -0.6)
-            right = 1;
-        // printf("left: %d, right: %d\n", left, right);
-}
-
-void Sensor:: calcJump() 
-    {
-        BSP_ACCELERO_AccGetXYZ(_pAccDataXYZ);
-        if ( ((_pAccDataXYZ[1]-_AccOffset[1])*DownScaler) > 0.5){
-            jump = 1;
-        }
-
-    }
 
 void Sensor:: init_params(){
-    
-    left = 0;
-    right = 0;
-    jump = 0;
-    itemFront = 0;
-    itemBack = 0;
-    drift = 0;
-    acc = 0;
-
+    leftButton = 0;
+    rightButton = 0;
+    topButton = 0;
 }

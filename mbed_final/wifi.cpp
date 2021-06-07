@@ -16,13 +16,13 @@ extern SpwfSAInterface wifi;
 #endif
 
 #define SENT_SPACING_TIME 100
-#define IP_address "192.168.10.100"
+#define IP_address "192.168.43.106"
 #define Port_number 3000
 #define Sample_rate 2
 
 
-WIFI::WIFI(NetworkInterface* wifi, events::EventQueue &event_queue, TCPSocket* socket)
-        : _wifi(wifi), _event_queue(event_queue), _socket(socket)
+WIFI::WIFI(NetworkInterface* wifi, events::EventQueue &event_queue)
+        : _wifi(wifi), _event_queue(event_queue), _socket(NULL)
 { 
     
 }
@@ -32,13 +32,15 @@ WIFI::~WIFI(){
     _wifi->disconnect();
 }
 
-void WIFI::connect(){
-    printf("\nConnecting to %s...\n", MBED_CONF_APP_WIFI_SSID);
-    int ret = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_WPA_WPA2);
-    if (ret != 0) {
-        printf("\nConnection error\n");
-        return;
-    }
+void WIFI::connect(TCPSocket* socket){
+    int ret;
+    do {
+        printf("\nConnecting to %s...\n", MBED_CONF_APP_WIFI_SSID);
+        ret = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_WPA_WPA2);
+        if (ret != 0) {
+            printf("\nConnection error\n");
+        }
+    } while (ret != 0);
 
     printf("Success\n\n");
     printf("MAC: %s\n", wifi.get_mac_address());
@@ -53,42 +55,53 @@ void WIFI::connect(){
     _wifi->get_ip_address(&addr);
     printf("IP address: %s\n", addr.get_ip_address() ? addr.get_ip_address() : "None");
     printf("Sending request to %s...\n", IP_address);
-    _socket->open(_wifi);
-    _wifi->gethostbyname(IP_address, &addr);
-    addr.set_port(Port_number);
-    response = _socket->connect(addr);
 
-    if (0 != response){
-        printf("Error connecting: %d\n", response);
-        // socket.close();
-        // return; 
-    }
+    do {
+        _socket = new TCPSocket;
+        _socket->open(_wifi);
+        _wifi->gethostbyname(IP_address, &addr);
+        addr.set_port(Port_number);
+        response = _socket->connect(addr);
+
+        if (NSAPI_ERROR_OK != response){
+            printf("Error connecting: %d\n", response);
+            _socket->close();
+            delete _socket;
+            ThisThread::sleep_for(5000);
+        }
+    } while (NSAPI_ERROR_OK != response);
+    socket = _socket;
+    printf("WIFI connect() return\n");
 
 }
 
 
-void WIFI:: send_data(Sensor* sensor)
+void WIFI:: send_data(Sensor* sensor, bool* socket_connect)
 {
-    // printf("send Data\n");
-    char sbuffer[105] = "";
+    if (!*socket_connect) {
+        _event_queue.break_dispatch();
+        printf("Lost Connection. Please restart.\n");
+        return;
+    }
+    
+    char sbuffer[250] = "";
+    char rbuffer[4] = "";
     nsapi_error_t response;
     nsapi_size_t size = strlen(sbuffer);
 
 
-    int len = sprintf(sbuffer,"{\"Left\":%d,\"Right\":%d,\"Jump\":%d,\"Item_front\":%d,\"Item_back\":%d,\"Drift\":%d,\"Acc\":%d}",sensor->left,sensor->right,sensor->jump,sensor->itemFront,sensor->itemBack,sensor->drift,sensor->acc);
-    // printf("{\"Left\":%d,\"Right\":%d,\"Jump\":%d,\"Item_front\":%d,\"Item_back\":%d,\"Drift\":%d,\"Acc\":%d}\n",_left,_right,_jump,_itemFront,_itemBack,_drift,_acc);
-    if (sensor->jump) printf("jump\n");
-    if (sensor->left) printf("left\n");
-    if (sensor->right) printf("right\n");
-    if (sensor->itemFront) printf("throw item front\n");
-    if (sensor->itemBack) printf("throw item back\n");
-    if (sensor->drift) printf("drift\n");
-
+    float accx = sensor->_pAccDataXYZ[0]-sensor->_AccOffset[0], accy = sensor->_pAccDataXYZ[1]-sensor->_AccOffset[1], accz = sensor->_pAccDataXYZ[2]-sensor->_AccOffset[2];
+    float gyrox = sensor->_pGyroDataXYZ[0]-sensor->_GyroOffset[0], gyroy = sensor->_pGyroDataXYZ[1]-sensor->_GyroOffset[1], gyroz = sensor->_pGyroDataXYZ[2]-sensor->_GyroOffset[2];
+    int len = sprintf(sbuffer,"{\"Acc_x\":%.2f,\"Acc_y\":%.2f,\"Acc_z\":%.2f,\"Gyro_x\":%.2f,\"Gyro_y\":%.2f,\"Gyro_z\":%.2f,\"leftButton\":%d,\"rightButton\":%d,\"topButton\":%d}",(float)((int)(accx*10000))/10000,(float)((int)(accy*10000))/10000,(float)((int)(accz*10000))/10000,(float)((int)(gyrox*10000))/10000,(float)((int)(gyroy*10000))/10000,(float)((int)(gyroz*10000))/10000,sensor->leftButton, sensor->rightButton, sensor->topButton);
+    printf("len: %d\n", len);
 
     response = _socket->send(sbuffer,len);
-    if (0 >= response){
+    if (len != response){
         printf("Error sending: %d\n", response);
     }
+    int rcount = _socket->recv(rbuffer, sizeof(rbuffer));
+    printf("rcount = %d, receive message = %s\n", rcount, rbuffer);
+    if (rbuffer[0] != 'o' || rbuffer[1] != 'k') *socket_connect = false;
 }
 
 /*

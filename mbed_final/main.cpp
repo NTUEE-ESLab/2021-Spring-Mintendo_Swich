@@ -21,14 +21,21 @@ SpwfSAInterface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
 
 static EventQueue event_queue( 16 * EVENTS_EVENT_SIZE);
 
+static BufferedSerial serial_port(USBTX, USBRX);
+FileHandle *mbed::mbed_override_console(int fd)
+{
+    return &serial_port; 
+}
+
 
 int main()
 {   
     TCPSocket socket;
     Sensor sensor(event_queue);
-    WIFI   _wifi(&wifi, event_queue, &socket);
+    WIFI   _wifi(&wifi, event_queue);
+    bool socket_connect = true;
 
-    _wifi.connect();
+    _wifi.connect(&socket);
 
     printf("------------------------\n");
     printf("Mario Kart game Start ><\n");
@@ -36,7 +43,10 @@ int main()
 
 
     event_queue.call_every(100ms,&sensor, &Sensor::getData);
-    event_queue.call_every(100ms,&_wifi, &WIFI::send_data,&sensor);
+    event_queue.call_every(100ms,&_wifi, &WIFI::send_data,&sensor, &socket_connect);
     event_queue.call_every(100ms,&sensor, &Sensor::init_params);
     event_queue.dispatch_forever();
+
+    while(socket_connect) {};
+    if (!socket_connect) return 0;
 }
