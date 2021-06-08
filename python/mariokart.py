@@ -40,7 +40,7 @@ def action(j_data, past_j_data):
     elif ((j_data["Acc_x"]*DownScaler) > -0.6) and ((past_j_data["Acc_x"]*DownScaler) < -0.6):
         kb.release(keyDict["Right"])
     
-    if ((j_data["Acc_y"]*DownScaler) > 0.5) and ((past_j_data["Acc_y"]*DownScaler) < 0.5):
+    if ((j_data["Acc_y"]*DownScaler2) > 0.5) and ((past_j_data["Acc_y"]*DownScaler2) < 0.5):
         kb.press(keyDict["Drift"])
     elif ((j_data["Acc_y"]*DownScaler2) < 0.5) and ((past_j_data["Acc_y"]*DownScaler2) > 0.5):
         kb.release(keyDict["Drift"])
