@@ -28,12 +28,47 @@ FileHandle *mbed::mbed_override_console(int fd)
 }
 
 
+TCPSocket socket;
+Sensor sensor(event_queue);
+WIFI   _wifi(&wifi, event_queue);
+bool is_connect = true;
+
+Timeout disable_irq;
+
+InterruptIn ISR_BUT_USER(D2);
+
+void enable_BUT_IRQ(){
+    ISR_BUT_USER.enable_irq();
+};
+
+
+void rise_handler(){
+    ISR_BUT_USER.disable_irq();
+    event_queue.call(&sensor, &Sensor::getData);
+    sensor.topButton=1;
+    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
+    event_queue.call(&sensor, &Sensor::init_params);
+    event_queue.call(printf, "ISR event triggered\n");
+    disable_irq.attach(&enable_BUT_IRQ,20ms); 
+};
+
+
+void fall_handler(){
+    ISR_BUT_USER.disable_irq();
+    event_queue.call(&sensor, &Sensor::getData);
+    sensor.topButton=0;
+    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
+    event_queue.call(&sensor, &Sensor::init_params);
+    event_queue.call(printf, "ISR event triggered\n");
+    disable_irq.attach(&enable_BUT_IRQ,20ms);
+    
+};
+
+
+
 int main()
 {   
-    TCPSocket socket;
-    Sensor sensor(event_queue);
-    WIFI   _wifi(&wifi, event_queue);
-    bool socket_connect = true;
+    
 
     _wifi.connect(&socket);
 
@@ -41,12 +76,18 @@ int main()
     printf("Mario Kart game Start ><\n");
     printf("------------------------\n");
 
+    ISR_BUT_USER.rise(rise_handler);
+    ISR_BUT_USER.fall(fall_handler);
 
-    event_queue.call_every(100ms,&sensor, &Sensor::getData);
-    event_queue.call_every(100ms,&_wifi, &WIFI::send_data,&sensor, &socket_connect);
-    event_queue.call_every(100ms,&sensor, &Sensor::init_params);
+
+    event_queue.call_every(50ms,&sensor, &Sensor::getData);
+    event_queue.call_every(50ms,&sensor, &Sensor::judge_motion);
+    event_queue.call_every(50ms,&_wifi, &WIFI::send_data,&sensor, &is_connect);
+    event_queue.call_every(50ms,&sensor, &Sensor::init_params);
+
+
     event_queue.dispatch_forever();
 
-    while(socket_connect) {};
-    if (!socket_connect) return 0;
+    while(is_connect) {};
+    if (!is_connect) return 0;
 }

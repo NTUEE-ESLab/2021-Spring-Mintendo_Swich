@@ -1,4 +1,5 @@
 #include "sensor.h"
+#include <cmath>
 
 // #define DownScaler 0.001 //adjust units of acceleration read from STM
 
@@ -22,7 +23,7 @@ void Sensor::calibrate(){
     int n = 0;
     _AccOffset[0] = _AccOffset[1] = _AccOffset[2] = 0;
     _GyroOffset[0] = _GyroOffset[1] = _GyroOffset[2] = 0;
-    while(n < 50){
+    while(n < 1000){
         BSP_ACCELERO_AccGetXYZ(_pAccDataXYZ);
         BSP_GYRO_GetXYZ(_pGyroDataXYZ);
         for(int i = 0; i < 3; ++i){
@@ -51,8 +52,31 @@ void Sensor::getData()
     BSP_GYRO_GetXYZ(_pGyroDataXYZ);
 }
 
+void Sensor::judge_motion(){
+    if (judge_motion_count<judge_motion_threshold){
+        judge_motion_count++;
+        motion_occur = true;
+    }
+    else{
+        for (int i=0 ;i<3; i++){
+            if(abs(prev_pAccDataXYZ[i]-_pAccDataXYZ[i]) > acc_motion_threshold || abs(prev_pGyroDataXYZ[i]-_pGyroDataXYZ[i])>gyro_motion_threshold){
+                motion_occur = true;
+                break;
+            }       
+        }
+    }
+    
+}
+
 void Sensor:: init_params(){
     leftButton = 0;
     rightButton = 0;
     topButton = 0;
+    motion_occur = false;
+
+    for(int i=0; i<3; i++){
+        prev_pAccDataXYZ[i] = _pAccDataXYZ[i];
+        prev_pGyroDataXYZ[i] = _pGyroDataXYZ[i];
+    }
+
 }

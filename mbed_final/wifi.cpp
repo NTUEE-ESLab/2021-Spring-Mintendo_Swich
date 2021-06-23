@@ -16,7 +16,7 @@ extern SpwfSAInterface wifi;
 #endif
 
 #define SENT_SPACING_TIME 100
-#define IP_address "192.168.43.106"
+#define IP_address "192.168.10.100"
 #define Port_number 3000
 #define Sample_rate 2
 
@@ -81,6 +81,11 @@ void WIFI:: send_data(Sensor* sensor, bool* socket_connect)
     if (!*socket_connect) {
         _event_queue.break_dispatch();
         printf("Lost Connection. Please restart.\n");
+        return;
+    }
+
+    if(! sensor->motion_occur){
+        printf("no motion, don't send data\n");
         return;
     }
     

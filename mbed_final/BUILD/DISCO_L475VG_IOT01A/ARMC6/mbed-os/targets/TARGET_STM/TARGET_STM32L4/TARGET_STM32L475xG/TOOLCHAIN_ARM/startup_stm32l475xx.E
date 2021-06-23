@@ -1,8 +1,8 @@
 # 1 ".\\mbed-os\\targets\\TARGET_STM\\TARGET_STM32L4\\TARGET_STM32L475xG\\TOOLCHAIN_ARM\\startup_stm32l475xx.S"
 # 1 "<built-in>" 1
-# 395 "<built-in>"
+# 394 "<built-in>"
 # 1 "./BUILD/DISCO_L475VG_IOT01A/ARMC6\\mbed_config.h" 1
-# 396 "<built-in>" 2
+# 395 "<built-in>" 2
 # 1 ".\\mbed-os\\targets\\TARGET_STM\\TARGET_STM32L4\\TARGET_STM32L475xG\\TOOLCHAIN_ARM\\startup_stm32l475xx.S" 2
 ;*******************************************************************************
 ;* File Name : startup_stm32l475xx.s

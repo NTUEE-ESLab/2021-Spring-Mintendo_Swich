@@ -6,12 +6,11 @@ keyDict = {"Left": "left", "Right": "right", "rightButton":"up", "leftButton":"d
 DownScaler = 0.005
 DownScaler2 = 0.001
 
+x_threshold = 0.8
+
 def action(j_data, past_j_data):
     if past_j_data == None:
         return
-
-    print(j_data["Acc_x"])
-    print(type(j_data["Acc_x"]))
 
     # deal with button
     if j_data["leftButton"] == 1 and past_j_data["leftButton"] ==0:
@@ -30,18 +29,21 @@ def action(j_data, past_j_data):
         kb.release(keyDict["topButton"])
 
     # deal with acc and gyro data
-    if ((j_data["Acc_x"]*DownScaler) > 0.6) and ((past_j_data["Acc_x"]*DownScaler) < 0.6):
+
+    
+    if ((j_data["Acc_x"]*DownScaler) > x_threshold) :
         kb.press(keyDict["Left"])
-    elif ((j_data["Acc_x"]*DownScaler) < 0.6) and ((past_j_data["Acc_x"]*DownScaler) > 0.6):
+    elif ((j_data["Acc_x"]*DownScaler) < x_threshold):
         kb.release(keyDict["Left"])
 
-    if ((j_data["Acc_x"]*DownScaler) < -0.6) and ((past_j_data["Acc_x"]*DownScaler) > -0.6):
+    if ((j_data["Acc_x"]*DownScaler) < -1*x_threshold):
         kb.press(keyDict["Right"])
-    elif ((j_data["Acc_x"]*DownScaler) > -0.6) and ((past_j_data["Acc_x"]*DownScaler) < -0.6):
+    elif ((j_data["Acc_x"]*DownScaler) > -1*x_threshold) :
         kb.release(keyDict["Right"])
     
     if ((j_data["Acc_y"]*DownScaler2) > 0.5) and ((past_j_data["Acc_y"]*DownScaler2) < 0.5):
         kb.press(keyDict["Drift"])
     elif ((j_data["Acc_y"]*DownScaler2) < 0.5) and ((past_j_data["Acc_y"]*DownScaler2) > 0.5):
         kb.release(keyDict["Drift"])
+    
     return
