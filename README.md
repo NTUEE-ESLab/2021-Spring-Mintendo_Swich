@@ -44,19 +44,20 @@ Mario Kart game is interesting for most age groups, but is it possible to take a
 1.	Download repository
 2.	Prerequisites:
 
-a. MBED OS 6.x (Mbed Studio)  
-b. Python 3.7 + keyboard package (pip install)  
-c. Stm32L4 (B-L475E-IOT01A)  
-d. Wires  
-e.	3 buttons
+    a. MBED OS 6.x (Mbed Studio)  
+    b. Python 3.7 + keyboard package (pip install)  
+    c. Stm32L4 (B-L475E-IOT01A)  
+    d. Wires  
+    e.	3 buttons
+
 3.	Settings
 
  a.	Wifi
    - MBED:
 
-i. Go to mbed_app.json and change wifi-ssid and wifi password to your own wifi  
-ii. Go to cmd to find your server’s IP address  
-iii. Change the IP address in wifi.cpp to your server’s wifi
+    i. Go to mbed_app.json and change wifi-ssid and wifi password to your own wifi  
+    ii. Go to cmd to find your server’s IP address  
+    iii. Change the IP address in wifi.cpp to your server’s wifi
 
    - Python:
 
@@ -67,13 +68,13 @@ iii. Change the IP address in wifi.cpp to your server’s wifi
    - Equip 3 buttons on stm32 
     
     i. top button should connect to D2  
-ii. left button should connect to D1  
-iii. right button should connect to D0
+    ii. left button should connect to D1  
+    iii. right button should connect to D0
 4.	Start playing
 
-a.	launch server2.py  
-b. connect stm32  
-c. start your game   
-d. enjoy
+    a.	launch server2.py  
+    b. connect stm32  
+    c. start your game   
+    d. enjoy
 
 
