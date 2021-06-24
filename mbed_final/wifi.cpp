@@ -20,11 +20,12 @@ extern SpwfSAInterface wifi;
 #define Port_number 3000
 #define Sample_rate 2
 
+extern TCPSocket socket;
 
 WIFI::WIFI(NetworkInterface* wifi, events::EventQueue &event_queue)
         : _wifi(wifi), _event_queue(event_queue), _socket(NULL)
 { 
-    
+    this->connect(&socket);
 }
 
 WIFI::~WIFI(){

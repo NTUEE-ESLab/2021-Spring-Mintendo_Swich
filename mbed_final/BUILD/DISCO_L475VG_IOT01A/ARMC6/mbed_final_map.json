@@ -79,9 +79,9 @@
     {
         "module": "main.o",
         "size": {
-            ".text": 2498,
+            ".text": 2514,
             ".data": 1,
-            ".bss": 2612,
+            ".bss": 2740,
             ".text-delta": 0,
             ".data-delta": 0,
             ".bss-delta": 0
@@ -233,7 +233,7 @@
     {
         "module": "wifi.o",
         "size": {
-            ".text": 1447,
+            ".text": 1461,
             ".data": 0,
             ".bss": 0,
             ".text-delta": 0,
@@ -243,9 +243,9 @@
     },
     {
         "summary": {
-            "static_ram": 18364,
+            "static_ram": 18492,
             "static_ram_delta": 0,
-            "total_flash": 111835,
+            "total_flash": 111865,
             "total_flash_delta": 0
         }
     }

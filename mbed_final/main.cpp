@@ -33,51 +33,48 @@ Sensor sensor(event_queue);
 WIFI   _wifi(&wifi, event_queue);
 bool is_connect = true;
 
-Timeout disable_irq;
-
-InterruptIn ISR_BUT_USER(D2);
-
-void enable_BUT_IRQ(){
-    ISR_BUT_USER.enable_irq();
-};
 
 
-void rise_handler(){
-    ISR_BUT_USER.disable_irq();
-    event_queue.call(&sensor, &Sensor::getData);
-    sensor.topButton=1;
-    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
-    event_queue.call(&sensor, &Sensor::init_params);
-    event_queue.call(printf, "ISR event triggered\n");
-    disable_irq.attach(&enable_BUT_IRQ,20ms); 
-};
+///ISR
+Timeout top_disable_irq;
+Timeout right_disable_irq;
+Timeout left_disable_irq;
 
+InterruptIn TOP(D2);
+//InterruptIn RIGHT(D0);
+//InterruptIn LEFT(D1);
 
-void fall_handler(){
-    ISR_BUT_USER.disable_irq();
-    event_queue.call(&sensor, &Sensor::getData);
-    sensor.topButton=0;
-    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
-    event_queue.call(&sensor, &Sensor::init_params);
-    event_queue.call(printf, "ISR event triggered\n");
-    disable_irq.attach(&enable_BUT_IRQ,20ms);
-    
-};
+void top_enable_IRQ();
+void top_rise_handler();
+void top_fall_handler();
+/*
+void right_enable_IRQ();
+void right_rise_handler();
+void right_fall_handler();
 
-
+void left_enable_IRQ();
+void left_rise_handler();
+void left_fall_handler();
+*/
 
 int main()
 {   
     
-
-    _wifi.connect(&socket);
+    //_wifi.connect(&socket);
+    
 
     printf("------------------------\n");
     printf("Mario Kart game Start ><\n");
     printf("------------------------\n");
 
-    ISR_BUT_USER.rise(rise_handler);
-    ISR_BUT_USER.fall(fall_handler);
+    TOP.rise(top_rise_handler);
+    TOP.fall(top_fall_handler);
+   /*
+    RIGHT.rise(right_rise_handler);
+    RIGHT.fall(right_fall_handler);
+    LEFT.rise(left_rise_handler);
+    LEFT.fall(left_fall_handler);
+    */
 
 
     event_queue.call_every(50ms,&sensor, &Sensor::getData);
@@ -91,3 +88,93 @@ int main()
     while(is_connect) {};
     if (!is_connect) return 0;
 }
+
+
+//ISR
+
+void top_enable_IRQ(){
+    TOP.enable_irq();
+};
+
+
+void top_rise_handler(){
+    TOP.disable_irq();
+    event_queue.call(&sensor, &Sensor::getData);
+    sensor.topButton=1;
+    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
+    event_queue.call(&sensor, &Sensor::init_params);
+    event_queue.call(printf, "ISR event triggered\n");
+    top_disable_irq.attach(&top_enable_IRQ,20ms); 
+};
+
+
+void top_fall_handler(){
+    TOP.disable_irq();
+    event_queue.call(&sensor, &Sensor::getData);
+    sensor.topButton=0;
+    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
+    event_queue.call(&sensor, &Sensor::init_params);
+    event_queue.call(printf, "ISR event triggered\n");
+    top_disable_irq.attach(&top_enable_IRQ,20ms);
+    
+};
+
+/*
+//right
+void right_enable_IRQ(){
+    RIGHT.enable_irq();
+};
+
+
+void right_rise_handler(){
+    RIGHT.disable_irq();
+    event_queue.call(&sensor, &Sensor::getData);
+    sensor.rightButton=1;
+    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
+    event_queue.call(&sensor, &Sensor::init_params);
+    event_queue.call(printf, "ISR event triggered\n");
+    right_disable_irq.attach(&right_enable_IRQ,20ms); 
+};
+
+
+void right_fall_handler(){
+    RIGHT.disable_irq();
+    event_queue.call(&sensor, &Sensor::getData);
+    sensor.rightButton=0;
+    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
+    event_queue.call(&sensor, &Sensor::init_params);
+    event_queue.call(printf, "ISR event triggered\n");
+    right_disable_irq.attach(&right_enable_IRQ,20ms);
+    
+};
+
+//left
+void left_enable_IRQ(){
+    LEFT.enable_irq();
+};
+
+
+void left_rise_handler(){
+    LEFT.disable_irq();
+    event_queue.call(&sensor, &Sensor::getData);
+    sensor.leftButton=1;
+    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
+    event_queue.call(&sensor, &Sensor::init_params);
+    event_queue.call(printf, "ISR event triggered\n");
+    left_disable_irq.attach(&left_enable_IRQ,20ms); 
+};
+
+
+void left_fall_handler(){
+    LEFT.disable_irq();
+    event_queue.call(&sensor, &Sensor::getData);
+    sensor.leftButton=0;
+    event_queue.call(&_wifi, &WIFI::send_data, &sensor, &is_connect);
+    event_queue.call(&sensor, &Sensor::init_params);
+    event_queue.call(printf, "ISR event triggered\n");
+    left_disable_irq.attach(&left_enable_IRQ,20ms);
+    
+};
+
+///
+*/
