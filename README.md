@@ -6,7 +6,7 @@ esys_final_project
 
 
 ## Introduction 
-This is a Mario Kart game based on open source code and implement gamepad using STM32.
+This is a Mario Kart game based on open source code and implement gamepad using STM32. We intended to design stm32 as a video game controller which can easily adapt on different video games with sensitive controlling, low energy consideration and some user friendly designs.
 
 ## Motivation
 Mario Kart game is interesting for most age groups, but is it possible to take a step further? In this project, we use STM32 as game controller, and we expect to have a better gaming experience than using keyboard. The game we play is an open source project, [Süper Mario Kart](https://github.com/vmbatlle/super-mario-kart).
@@ -19,7 +19,11 @@ Mario Kart game is interesting for most age groups, but is it possible to take a
     b. Python 3.7 + keyboard package (pip install)  
     c. Stm32L4 (B-L475E-IOT01A)  
     d. Wires  
-    e.	3 buttons
+    e.	3 buttons  
+    f. MinGW32 posix 8.1.0 or GCC 7.5.0 (C++ 11 compiler)  
+    g. SFML 2.5.1 (graphics generation and audio playback)  
+    h. OpenAL (cross-platform API for 3D audio)  
+       ***please check out the [link](https://github.com/vmbatlle/super-mario-kart#21-prerequisites) for more information about compiling the game on your own***
 
 3.	Settings
 
