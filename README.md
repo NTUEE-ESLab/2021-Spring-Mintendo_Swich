@@ -5,8 +5,7 @@
 
 Mario Kart based on open source code and implement gamepad using STM32
 ## Motivation
-Mario Kart game is so much fun, but is it possible to take a step further? In this project, we use STM32 as game controller, and we expect to have a better gaming experience than using keyboard. The game we play is an open source project, [Süper Mario Kart](https://github.com/vmbatlle/super-mario-kart).
-## Workflow
+Mario Kart game is interesting for most age groups, but is it possible to take a step further? In this project, we use STM32 as game controller, and we expect to have a better gaming experience than using keyboard. The game we play is an open source project, [Süper Mario Kart](https://github.com/vmbatlle/super-mario-kart).
 ## Implementation
 ### STM32
 - Three buttons
@@ -41,17 +40,11 @@ Mario Kart game is so much fun, but is it possible to take a step further? In th
     - Jump: check if accelerometer’s y-value > given threshold
     - Throw item front/back and drift: button transition
 
-## Demo Video
-## Observation
-- To reduce computation overhead on STM32
-    - Compute on computer CPU
-
-## Conclusion
 ## Dowload Steps
 1.	Download repository
 2.	Prerequisites:
 
- a. MBED OS 6.x (Mbed Studio)  
+a. MBED OS 6.x (Mbed Studio)  
 b. Python 3.7 + keyboard package (pip install)  
 c. Stm32L4 (B-L475E-IOT01A)  
 d. Wires  
@@ -61,7 +54,7 @@ e.	3 buttons
  a.	Wifi
    - MBED:
 
-    i. Go to mbed_app.json and change wifi-ssid and wifi password to your own wifi  
+i. Go to mbed_app.json and change wifi-ssid and wifi password to your own wifi  
 ii. Go to cmd to find your server’s IP address  
 iii. Change the IP address in wifi.cpp to your server’s wifi
 
@@ -78,7 +71,7 @@ ii. left button should connect to D1
 iii. right button should connect to D0
 4.	Start playing
 
- a.	launch server2.py  
+a.	launch server2.py  
 b. connect stm32  
 c. start your game   
 d. enjoy
