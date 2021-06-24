@@ -36,7 +36,7 @@ Mario Kart game is interesting for most age groups, but is it possible to take a
 
     - Python:
 
-        iv.	Go to server2.py and change the host to your server’s IP address
+        iv.	Go to server.py and change the host to your server’s IP address
 
     b.	Stm32  
 
@@ -48,7 +48,7 @@ Mario Kart game is interesting for most age groups, but is it possible to take a
 
 4.	Start playing
 
-    a.	launch server2.py  
+    a.	launch server.py  
     b. connect stm32  
     c. start your game   
     d. enjoy
