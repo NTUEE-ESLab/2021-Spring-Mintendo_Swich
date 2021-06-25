@@ -6,7 +6,7 @@ esys_final_project
 
 
 ## Introduction 
-This is a embedded-system project based on open source codes for games, which implements gamepad to control keyboard using STM32. We intended to design stm32 as a video game controller which can easily adapt on different keyboard-controlled video games with sensitive controlling, low energy consideration and some user friendly designs. Specifically, we will demonstrate our project on Mario kart game and pong.
+This is a project based on open source codes for games, which implements gamepad to control keyboard using STM32. We intended to design stm32 as a video game controller which can easily adapt on different keyboard-controlled video games with sensitive controlling, low energy consideration and some user friendly designs. Specifically, we will demonstrate our project on Mario kart game and pong.
 
 ## Motivation
 Mario Kart as well as other keyboard games are interesting for most age groups, but is it possible to take a step further? In this project, we use STM32 as game controller, and we expect to have a better gaming experience than using keyboard. The first game we play is an open source game project, [Süper Mario Kart](https://github.com/vmbatlle/super-mario-kart), and the second game we demonstrate is pong.
