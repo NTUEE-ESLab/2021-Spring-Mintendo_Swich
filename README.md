@@ -1,6 +1,6 @@
 ESLAB_2021_spring Mintendo Swich
 ====
-**Authors:** [?€?‰ä?](https://github.com/dennismenn), [å»–è€•æ?](https://github.com/danielliao66) and [?³å??»]](https://github.com/yenyuuuuu) (according to Chinese alphabetic indexes)
+**Authors:** [ªù¥É¤¯](https://github.com/dennismenn), [³¯§°³ë](https://github.com/danielliao66) and [¹ù¯Ñ¼Ý](https://github.com/yenyuuuuu) (according to Chinese alphabetic indexes)
 Note: for details please refer to report.pdf
 ## Introduction 
 This is a project based on open source codes for games, which implements gamepad to control keyboard using STM32. We intended to design stm32 as a video game controller which can easily adapt on different keyboard-controlled video games with sensitive controlling, low energy consideration and some user friendly designs. Specifically, we will demonstrate our project on Mario kart game and pong.
