@@ -71,5 +71,6 @@ Mario Kart as well as other keyboard games are interesting for most age groups, 
     d. enjoy
 
 4.	Demo video
-    a. [Mario kart] (https://youtu.be/GiSYW9s1_YA)  
-    b. [Pong demo] (https://youtu.be/FAamO4nEKC8)
+
+    a. Mario kart (https://youtu.be/GiSYW9s1_YA)  
+    b. Pong demo (https://youtu.be/FAamO4nEKC8)
